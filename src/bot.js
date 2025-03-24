@@ -4,7 +4,10 @@ const { encodedToken } = process.env;
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 
-const TOKEN = Buffer.from(encodedToken, 'base64').toString('utf8');
+const token = Buffer.from(encodedToken, 'base64').toString('utf8');
+
+console.log("TOKEN from environment:", process.env.TOKEN);
+console.log(token)
 
 const client = new Client({
     intents: [
