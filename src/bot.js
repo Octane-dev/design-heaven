@@ -22,6 +22,28 @@ app.listen(PORT, () => {
 
 pingServer();
 
+// BOT LOADING
+
+const tokenPath = path.resolve(__dirname, '/etc/secrets/TOKEN');
+let token;
+
+try {
+    token = fs.readFileSync(tokenPath, 'utf8').trim();
+    if (!token) throw new Error('Token file is empty.');
+} catch (error) {
+    console.error('Failed to load token from file:', error.message);
+    process.exit(1);
+}
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.MessageContent,
+    ],
+});
+
 // SEND BOT INFO
 
 setInterval(() => {
@@ -68,28 +90,6 @@ process.on("unhandledRejection", (reason) => {
     const errorName = reason?.name || "UnhandledRejection";
     client.commonErrors[errorName] = (client.commonErrors[errorName] || 0) + 1;
     console.error("Unhandled Rejection:", reason);
-});
-
-// BOT LOADING
-
-const tokenPath = path.resolve(__dirname, '/etc/secrets/TOKEN');
-let token;
-
-try {
-    token = fs.readFileSync(tokenPath, 'utf8').trim();
-    if (!token) throw new Error('Token file is empty.');
-} catch (error) {
-    console.error('Failed to load token from file:', error.message);
-    process.exit(1);
-}
-
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.MessageContent,
-    ],
 });
 
 // Bot collections
