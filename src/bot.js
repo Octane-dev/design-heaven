@@ -6,6 +6,7 @@ const app = express()
 const path = require('path');
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const { pingServer } = require('./pingServer');
+const { memoryUsage, cpuUsage } = require('process');
 
 // SERVER LOADING
 
@@ -25,13 +26,49 @@ pingServer();
 
 setInterval(() => {
     const botData = {
-        guildCount: client.guilds.cache.size,
-        userCount: client.users.cache.size,
-        uptime: Math.floor(process.uptime()),
+        stats: {
+            guildCount: client.guilds.cache.size,
+            userCount: client.users.cache.size,
+            uptime: Math.floor(process.uptime()),
+        },
+        performance: {
+            memoryUsage: {
+                rss: process.memoryUsage().rss / (1024 * 1024).toFixed(2),
+                heapUsed: (process.memoryUsage().heapUsed / (1024 * 1024)).toFixed(2),
+                heapTotal: (process.memoryUsage().heapTotal / (1024 * 1024)).toFixed(2),
+            },
+            cpuUsage: process.cpuUsage(),
+            latency: client.ws.ping,
+        },
+        commands: {
+            totalCommandsExecuted: ClientUser.totalCommandsExecuted || 0,
+            topCommands: client.commandUsage || {},
+        },
+        errrors: {
+            totalErrors: client.errorCount || 0,
+            commonErrors: client.commonErrors || {},
+        },
     };
 
     sendBotData(botData)
 }, 5 * 60 * 1000);
+
+// TRACK ERRORS
+
+client.errorCount = 0;
+client.commonErrors = {};
+process.on("uncaughtException", (err) => {
+    client.errorCount++;
+    const errorName = err.name || "UnknownError";
+    client.commonErrors[errorName] = (client.commonErrors[errorName] || 0) + 1;
+    console.error("Uncaught Exception:", err);
+});
+process.on("unhandledRejection", (reason) => {
+    client.errorCount++;
+    const errorName = reason?.name || "UnhandledRejection";
+    client.commonErrors[errorName] = (client.commonErrors[errorName] || 0) + 1;
+    console.error("Unhandled Rejection:", reason);
+});
 
 // BOT LOADING
 

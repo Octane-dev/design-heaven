@@ -3,6 +3,11 @@ const { InteractionType } = require("discord.js");
 module.exports = {
   name: "interactionCreate",
   async execute(interaction, client) {
+    if (!client.commandUsage) {
+      client.commandUsage = {};
+      client.totalCommandsExecuted = 0;
+    }
+
     if (interaction.isChatInputCommand()) {
       const { commands } = client;
       const { commandName } = interaction;
@@ -11,10 +16,14 @@ module.exports = {
 
       if (!interaction.guild) {
         return await interaction.reply({
-            content: 'Commands cannot be used in DMs. Please use this bot in a server.',
-            ephemeral: true // Sends the reply privately
+          content: "Commands cannot be used in DMs. Please use this bot in a server.",
+          ephemeral: true,
         });
       }
+
+      // Track command usage
+      client.totalCommandsExecuted++;
+      client.commandUsage[commandName] = (client.commandUsage[commandName] || 0) + 1;
 
       try {
         await command.execute(interaction, client);
