@@ -27,7 +27,7 @@ setInterval(() => {
     const botData = {
         guildCount: client.guilds.cache.size,
         userCount: client.users.cache.size,
-        uptime: client.uptime,
+        uptime: Math.floor(process.uptime()),
     };
 
     sendBotData(botData)
