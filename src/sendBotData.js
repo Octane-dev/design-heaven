@@ -1,8 +1,8 @@
-const fetch = (await import('node-fetch')).default;
 const secret = process.env.BOT_API_SECRET
 
 const sendBotData = async (data) => {
     try {
+        const fetch = (await import('node-fetch')).default;
         const response = await fetch('https://api.octaneinteractive.co.uk/api/bot-data', {
             method: 'POST',
             headers: {
