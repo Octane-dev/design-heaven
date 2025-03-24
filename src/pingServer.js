@@ -1,16 +1,17 @@
-const fetch = require('node-fetch');
-
-const SERVER_URL = 'https://api.octaneinteractive.co.uk/ping';
-
-const pingServer = async () => {
-    try {
-        const response = await fetch(SERVER_URL, { method: 'GET' });
-        console.log(`Web server pinged successfully. Response: ${await response.text()}`);
-    } catch (err) {
-        console.error('Error pinging web server:', err);
-    }
+const pingServer = () => {
+    setInterval(async () => {
+        try {
+            const fetch = (await import('node-fetch')).default;
+            const response = await fetch('https://api.octaneinteractive.co.uk/ping');
+            if (!response.ok) {
+                console.error(`Server responded with status: ${response.status}`);
+            } else {
+                console.log('Successfully pinged web server!');
+            }
+        } catch (error) {
+            console.error(`Error pinging web server: ${error.message}`);
+        }
+    }, 5 * 60 * 1000); // Ping every 5 minutes
 };
 
-setInterval(pingServer, 5 * 60 * 1000);
-
-module.exports = pingServer;
+module.exports = { pingServer };
