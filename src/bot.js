@@ -47,6 +47,7 @@ const client = new Client({
 // SEND BOT INFO
 
 setInterval(() => {
+    const guild = client.guilds.cache.first();
     const botData = {
         stats: {
             guildCount: client.guilds.cache.size,
@@ -69,6 +70,22 @@ setInterval(() => {
         errrors: {
             totalErrors: client.errorCount || 0,
             commonErrors: client.commonErrors || {},
+        },
+        serverStats: {
+            memberBreakdown: {
+                totalMembers: guild.memberCount,
+                onlineMembers: guild.presences?.cache.filter(presence => presence.status !== 'offline').size || 0,
+                roles: guild.roles.cache.map(role => ({
+                    name: role.name,
+                    count: role.members.size,
+                })),
+            },
+            botRole: {
+                name: guild.me.roles.highest.name,
+                position: guild.me.roles.highest.position,
+                permissions: guild.me.permissions.toArray(),
+            },
+            messages: client.messageCount || 0,    
         },
     };
 
@@ -115,6 +132,10 @@ for (const folder of functionFolders) {
 client.handleEvents();
 client.handleCommands();
 client.handleComponents();
+
+setInterval(() => {
+    client.messageCount = 0;
+}, 5 * 60 * 1000);
 
 // Handle button interactions
 client.on('interactionCreate', async interaction => {
