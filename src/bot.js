@@ -49,6 +49,13 @@ const client = new Client({
 
 setInterval(() => {
     const guild = client.guilds.cache.first();
+    if (!guild) {
+        console.error('No guilds found in the cache.');
+        return;
+    }
+
+    const botMember = guild.members.me;
+
     const botData = {
         stats: {
             guildCount: client.guilds.cache.size,
@@ -57,7 +64,7 @@ setInterval(() => {
         },
         performance: {
             memoryUsage: {
-                rss: process.memoryUsage().rss / (1024 * 1024).toFixed(2),
+                rss: (process.memoryUsage().rss / (1024 * 1024)).toFixed(2),
                 heapUsed: (process.memoryUsage().heapUsed / (1024 * 1024)).toFixed(2),
                 heapTotal: (process.memoryUsage().heapTotal / (1024 * 1024)).toFixed(2),
             },
@@ -74,23 +81,32 @@ setInterval(() => {
         },
         serverStats: {
             memberBreakdown: {
-                totalMembers: guild.memberCount,
-                onlineMembers: guild.presences?.cache.filter(presence => presence.status !== 'offline').size || 0,
-                roles: guild.roles.cache.map(role => ({
+                totalMembers: guild.memberCount || 0,
+                onlineMembers:
+                    guild.presences?.cache.filter(
+                        (presence) => presence.status !== 'offline'
+                    ).size || 0,
+                roles: guild.roles.cache.map((role) => ({
                     name: role.name,
                     count: role.members.size,
                 })),
             },
-            botRole: {
-                name: guild.me.roles.highest.name,
-                position: guild.me.roles.highest.position,
-                permissions: guild.me.permissions.toArray(),
-            },
-            messages: client.messageCount || 0,    
+            botRole: botMember
+                ? {
+                      name: botMember.roles.highest.name,
+                      position: botMember.roles.highest.position,
+                      permissions: botMember.permissions.toArray(),
+                  }
+                : {
+                      name: 'N/A',
+                      position: 'N/A',
+                      permissions: [],
+                  },
+            messages: client.messageCount || 0,
         },
     };
 
-    sendBotData(botData)
+    sendBotData(botData);
 }, 5 * 60 * 1000);
 
 // TRACK ERRORS
