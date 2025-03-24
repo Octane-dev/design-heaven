@@ -15,20 +15,20 @@ module.exports = (client) => {
 
     client.user
       .setPresence({
-        activities: [
-          {
-            name: option2.text,
-            type: option2.type,
-          },
-        ],
-        status: option2.status,
         // activities: [
         //   {
-        //     name: option.text,
-        //     type: option.type,
+        //     name: option2.text,
+        //     type: option2.type,
         //   },
         // ],
-        // status: option.status,
+        // status: option2.status,
+        activities: [
+          {
+            name: option.text,
+            type: option.type,
+          },
+        ],
+        status: option.status,
       });
   };
 };

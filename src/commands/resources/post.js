@@ -129,8 +129,37 @@ module.exports = {
                     option
                         .setName('instructions')
                         .setDescription('Any instructions or notes for the resource (optional).'))
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('alight-motion')
+                .setDescription('Post an Alight Motion resource.')
+                .addUserOption(option =>
+                    option
+                        .setName('created-by')
+                        .setDescription('The user who created this resource.')
+                        .setRequired(true))
+                .addAttachmentOption(option =>
+                    option
+                        .setName('file')
+                        .setDescription('The file to upload.')
+                        .setRequired(true))
+                .addStringOption(option =>
+                    option
+                        .setName('name')
+                        .setDescription('The name of the resource.')
+                        .setRequired(true))
+                .addStringOption(option =>
+                    option
+                        .setName('instructions')
+                        .setDescription('Any instructions or notes for the resource (optional).'))
         ),
     async execute(interaction) {
+
+        // await interaction.deferUpdate();
+
+        console.log("Uploading file")
+
         const subcommandGroup = interaction.options.getSubcommandGroup(false);  // Can be null if not part of a group
         const subcommand = interaction.options.getSubcommand();
         const creator = interaction.options.getUser('created-by');
@@ -151,6 +180,7 @@ module.exports = {
             'panzoid': '1274853715890929756',
             'blender': '1274762628463464458',
             'c4d': '1274762649892294759',
+            'alight-mtion': '1280235052600659998',
         };
 
         const colorMapping = {
@@ -161,6 +191,7 @@ module.exports = {
             'panzoid': '#000000',  // Black
             'blender': '#ea7600',  // Orange
             'c4d': '#8A2BE2',      // Blue Violet
+            'alight-motion': '#147a50' // mint green
         };
 
         let targetChannelId;

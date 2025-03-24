@@ -1,31 +1,43 @@
-const { ChannelType } = require('discord.js');
+const { ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     data: {
-        name: 'close'
+        name: 'close',
     },
-    async execute(interaction, client) {
+    async execute(interaction) {
         if (!interaction.isButton()) return;
 
-        // Extract channel ID from customId
-        const [action, channelId] = interaction.customId.split(':');
-        if (action !== 'close') return;
-
-        // Access the channel using client
-        const channel = client.channels.cache.get(channelId);
+        const channel = interaction.channel;
+        console.log('Channel retrieved from interaction:', channel);
 
         if (!channel || channel.type !== ChannelType.GuildText) {
-            await interaction.reply({ content: 'Channel not found or invalid type.', ephemeral: true });
+            await interaction.reply({
+                content: 'Channel not found or invalid type.',
+                ephemeral: true,
+            });
             return;
         }
 
+        const confirmButton = new ButtonBuilder()
+            .setCustomId(`confirm-close:${channel.id}`)
+            .setLabel('Confirm')
+            .setStyle(ButtonStyle.Danger);
+
+        const cancelButton = new ButtonBuilder()
+            .setCustomId(`cancel-close:${channel.id}`)
+            .setLabel('Cancel')
+            .setStyle(ButtonStyle.Secondary);
+
+        const row = new ActionRowBuilder().addComponents(confirmButton, cancelButton);
+
         try {
-            // Inform user and delete the channel
-            await interaction.reply({ content: 'Channel will be closed and deleted.', ephemeral: true });
-            await channel.delete();
+            await interaction.reply({
+                content: 'Are you sure you want to delete this channel? Click "Confirm" to proceed or "Cancel" to abort.',
+                components: [row],
+                ephemeral: true,
+            });
         } catch (error) {
-            console.error('Error deleting channel:', error);
-            await interaction.reply({ content: 'There was an error closing the channel. Please try again later.', ephemeral: true });
+            console.error('Error sending confirmation message:', error);
         }
-    }
+    },
 };

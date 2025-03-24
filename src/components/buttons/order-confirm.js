@@ -5,10 +5,8 @@ module.exports = {
         name: 'order-confirm'
     },
     async execute(interaction, client) {
-        // Log interaction details
         console.log('Button interaction received:', interaction.customId);
 
-        // Extract IDs from customId
         const action = interaction.customId.split(':')[0];
         const ids = interaction.customId.split(':')[1];
         const creatorUserId = ids.split('_')[0];
@@ -21,7 +19,7 @@ module.exports = {
         }
 
         const guild = interaction.guild;
-        const categoryId = '1274783328649613313'; // Replace with the actual category ID
+        const categoryId = '1274783328649613313';
 
         const category = guild.channels.cache.get(categoryId);
         if (!category) {
@@ -49,7 +47,6 @@ module.exports = {
         const interactionUsername = interactionUser.user.username;
 
         const channelName = `order-${interactionUsername}-${creatorUsername}`;
-        // Validate channel name
         if (!channelName || channelName.length < 2 || channelName.length > 100) {
             console.error('Invalid channel name:', channelName);
             await interaction.update({
@@ -87,13 +84,12 @@ module.exports = {
                 .setLabel('Close')
                 .setStyle(ButtonStyle.Danger);
 
-            // Send a message with the close button
             const row = new ActionRowBuilder().addComponents(closeButton);
 
-            // await newChannel.send({
-            //     content: 'This is your order channel. Click the button below to close the channel.',
-            //     components: [row],
-            // });
+            await newChannel.send({
+                content: 'This is your order channel. Click the button below to close the channel.',
+                components: [row],
+            });
 
             await interaction.update({
                 content: `Order confirmed. A new channel has been created: <#${newChannel.id}>.`,
