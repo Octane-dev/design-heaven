@@ -63,7 +63,7 @@ setInterval(() => {
             latency: client.ws.ping,
         },
         commands: {
-            totalCommandsExecuted: ClientUser.totalCommandsExecuted || 0,
+            totalCommandsExecuted: client.totalCommandsExecuted || 0,
             topCommands: client.commandUsage || {},
         },
         errrors: {
