@@ -1,8 +1,10 @@
 require("dotenv").config();
 
-const { token } = process.env;
+const { encodedToken } = process.env;
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
+
+const TOKEN = Buffer.from(encodedToken, 'base64').toString('utf8');
 
 const client = new Client({
     intents: [
