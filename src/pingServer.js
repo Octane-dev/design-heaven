@@ -1,8 +1,15 @@
 const pingServer = () => {
+    const secret = process.env.PING_SECRET;
+
     setInterval(async () => {
         try {
             const fetch = (await import('node-fetch')).default;
-            const response = await fetch('https://api.octaneinteractive.co.uk/ping');
+            const response = await fetch('https://api.octaneinteractive.co.uk/ping', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${secret}`
+                }
+            });
             if (!response.ok) {
                 console.error(`Server responded with status: ${response.status}`);
             } else {
