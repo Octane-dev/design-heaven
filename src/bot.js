@@ -14,6 +14,12 @@ const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) => {
     res.send("Bot is running!");
 });
+
+app.get('/ping', (req, res) => {
+    res.status(200).send('Bot is up!');
+    console.log('Received ping, staying awake!');
+});
+
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
