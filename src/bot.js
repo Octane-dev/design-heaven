@@ -4,6 +4,7 @@ const express = require("express")
 const app = express()
 const path = require('path');
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const { pingServer } = require('./pingServer');
 
 // SERVER LOADING
 
@@ -14,6 +15,10 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
+
+// PING SERVER
+
+pingServer();
 
 // BOT LOADING
 
