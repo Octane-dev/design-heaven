@@ -1,4 +1,5 @@
 require('./pingServer');
+const { sendBotData } = require('./sendBotData');
 const fs = require('fs');
 const express = require("express")
 const app = express()
@@ -19,6 +20,18 @@ app.listen(PORT, () => {
 // PING SERVER
 
 pingServer();
+
+// SEND BOT INFO
+
+setInterval(() => {
+    const botData = {
+        guildCount: client.guilds.cache.size,
+        userCount: client.users.cache.size,
+        uptime: client.uptime,
+    };
+
+    sendBotData(botData)
+}, 5 * 60 * 1000);
 
 // BOT LOADING
 
