@@ -3,6 +3,7 @@ const { SlashCommandBuilder, ChannelType } = require('discord.js')
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
+const path = require("path")
 
 module.exports = (client) => {
   client.handleCommands = async () => {
@@ -23,7 +24,17 @@ module.exports = (client) => {
 
     const clientId = "1275204271125827718";
     const guildId = "1273720168131854387";
-    const rest = new REST({ version: "9" }).setToken(process.env.token);
+
+    const tokenPath = path.resolve(__dirname, '/etc/secrets/TOKEN');
+    let token;
+    try {
+      token = fs.readFileSync(tokenPath, 'utf8').trim();
+    } catch (error) {
+      console.error(`Error reading the token from ${tokenPath}:`, error);
+      process.exit(1);
+    }
+    const rest = new REST({ version: "9" }).setToken(token);
+
     try {
       console.log("Started refreshing application (/) commands.");
 
