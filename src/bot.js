@@ -1,7 +1,21 @@
 require('./pingServer');
 const fs = require('fs');
+const express = require("express")
+const app = express()
 const path = require('path');
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
+
+// SERVER LOADING
+
+const PORT = process.env.PORT || 3000;
+app.get("/", (req, res) => {
+    res.send("Bot is running!");
+});
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});
+
+// BOT LOADING
 
 const tokenPath = path.resolve(__dirname, '/etc/secrets/TOKEN');
 let token;
